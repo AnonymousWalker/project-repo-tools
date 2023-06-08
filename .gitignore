@@ -9,3 +9,6 @@ local_settings.py
 /gogs/config.py
 /tw/config_yaml_generator/node_modules
 .vscode
+venv/Lib/site-packages/_yaml/__init__.py
+
+venv/

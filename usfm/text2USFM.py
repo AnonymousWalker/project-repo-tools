@@ -13,7 +13,7 @@ target_dir = r'C:\DCS\Shubi\work'
 language_code = "suj"
 mark_chunks = False   # Should be true for GL source text
 
-import usfm_verses
+from usfm import usfm_verses
 import re
 import operator
 import io

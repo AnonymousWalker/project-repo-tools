@@ -46,7 +46,6 @@ def extract_tstudio(file, destination_dir):
         zip.extractall(destination_dir)
 
     project_directory = prepare_project_dir(destination_dir)
-    print("Project at: ", project_directory)
     return project_directory
 
 def prepare_project_dir(dir):

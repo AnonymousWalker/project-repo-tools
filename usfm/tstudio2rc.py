@@ -79,12 +79,10 @@ def clear_directory(directory_path):
             os.rmdir(file_path)
 
 def convert(input_file, output_dir):
-    # input_file = r"E:\miscs\writer\aaa_eph_text_reg.tstudio"
-    # output_dir = r"E:\Projects\tstudio2rc\out"
-    clear_directory(output_dir)
     temp_dir = tempfile.mkdtemp()
 
-    rc_convert_dir = os.path.join(output_dir, "rc_dir")
+    file_name_no_ext = os.path.splitext(os.path.basename(input_file))[0]
+    rc_convert_dir = os.path.join(output_dir, file_name_no_ext)
     output_file = os.path.join(output_dir, "RC")
     manifest_file = os.path.join(rc_convert_dir, "manifest.yaml")
     os.makedirs(rc_convert_dir)
@@ -102,17 +100,14 @@ def convert(input_file, output_dir):
     shutil.make_archive(output_file, 'zip', rc_convert_dir)
     # clear_directory(temp_dir) # race-condition error: deleting while opened
     
-    output_file_name = os.path.splitext(os.path.basename(input_file))[0] + ".orature"
+    output_file_name = file_name_no_ext + ".orature"
     orature_file = os.path.join(os.path.dirname(rc_convert_dir), output_file_name)
 
     os.rename(output_file + ".zip", orature_file)
 
 
 def convertDir(input_dir, output_dir):
-    clear_directory(output_dir)
-    temp_dir = tempfile.mkdtemp()
-
-    rc_convert_dir = os.path.join(output_dir, "rc_dir")
+    rc_convert_dir = os.path.join(output_dir, os.path.basename(input_dir))
     output_file = os.path.join(output_dir, "RC")
     manifest_file = os.path.join(rc_convert_dir, "manifest.yaml")
     os.makedirs(rc_convert_dir)
@@ -134,17 +129,17 @@ def convertDir(input_dir, output_dir):
 
     os.rename(output_file + ".zip", orature_file)
 
-# if __name__ == "__main__":
-#     if len(sys.argv) != 3:
-#         print("Usage: python script.py [tstudio_file_path] [output_directory]")
-#         exit()
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("Usage: python script.py [tstudio_file_path] [output_directory]")
+        exit()
 
-#     input_path = sys.argv[1]
-#     output_dir = sys.argv[2]
+    input_path = sys.argv[1]
+    output_dir = sys.argv[2]
 
-#     if os.path.isdir(input_path):
-#         convertDir(input_path, output_dir)
-#     else:
-#         convert(input_path, output_dir)
+    if os.path.isdir(input_path):
+        convertDir(input_path, output_dir)
+    else:
+        convert(input_path, output_dir)
     
-#     print("Done!")
+    print("Done!")

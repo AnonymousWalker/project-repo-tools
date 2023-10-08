@@ -12,3 +12,4 @@ local_settings.py
 venv/Lib/site-packages/_yaml/__init__.py
 
 venv/
+virtual/**

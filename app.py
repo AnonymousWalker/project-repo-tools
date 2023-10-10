@@ -117,7 +117,7 @@ open_output_button.pack(pady=2)
 open_output_button.configure(state="disabled")
 open_output_button.pack()
 
-text_area = tk.Text(root, height=10, wrap=tk.WORD)
+text_area = tk.Text(root, height=10, wrap=tk.WORD, undo=True)
 text_area.bind("<KeyRelease>", update_manifest)
 text_area.pack_forget()
 

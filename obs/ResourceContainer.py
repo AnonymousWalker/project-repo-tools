@@ -97,8 +97,11 @@ class Project:
         elif self.rc.path and os.path.isfile(os.path.join(self.rc.path, 'title.txt')):
             self.project['title'] = read_file(os.path.join(self.rc.path, 'title.txt'))
             return self.project['title']
+        elif self.rc.path and os.path.isfile(os.path.join(self.rc.path, 'front', 'title.txt')):
+            self.project['title'] = read_file(os.path.join(self.rc.path, 'front', 'title.txt'))
+            return self.project['title']
         else:
-            return self.rc.resource.title
+            return self.project['id']
 
 
     @property

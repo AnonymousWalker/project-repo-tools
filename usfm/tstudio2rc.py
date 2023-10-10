@@ -82,7 +82,7 @@ class TstudioToRC:
                 self.clear_directory(file_path)
                 os.rmdir(file_path)
 
-    def convert(self, input_file, output_dir):
+    def convert(self, input_file, output_dir, manifest=None):
         temp_dir = tempfile.mkdtemp()
 
         file_name_no_ext = os.path.splitext(os.path.basename(input_file))[0]
@@ -92,12 +92,13 @@ class TstudioToRC:
         os.makedirs(rc_convert_dir)
 
         source_dir = self.extract_tstudio(input_file, temp_dir)
-        manifest = self.buildManifest(source_dir)
         converter_script.source_dir = source_dir
         converter_script.target_dir = rc_convert_dir
         converter_script.convertFolder(source_dir)
 
-        # write manifest.yaml
+        # manifest.yaml
+        if manifest == None:
+            manifest = self.buildManifest(source_dir)
         with open(manifest_file, 'w') as file:
             yaml.dump(manifest, file)
 
@@ -110,7 +111,7 @@ class TstudioToRC:
         os.rename(output_file + ".zip", orature_file)
 
 
-    def convertDir(self, input_dir, output_dir):
+    def convertDir(self, input_dir, output_dir, manifest=None):
         rc_convert_dir = os.path.join(output_dir, os.path.basename(input_dir))
         output_file = os.path.join(output_dir, "RC")
         manifest_file = os.path.join(rc_convert_dir, "manifest.yaml")
@@ -120,8 +121,9 @@ class TstudioToRC:
         converter_script.target_dir = rc_convert_dir
         converter_script.convertFolder(input_dir)
 
-        # write manifest.yaml
-        manifest = self.buildManifest(input_dir)
+        # manifest.yaml
+        if manifest == None or manifest == '':
+            manifest = self.buildManifest(input_dir)
         with open(manifest_file, 'w') as file:
             yaml.dump(manifest, file)
 
@@ -132,6 +134,13 @@ class TstudioToRC:
         orature_file = os.path.join(os.path.dirname(rc_convert_dir), output_file_name)
 
         os.rename(output_file + ".zip", orature_file)
+
+    def previewManifest(self, input_file):
+        temp_dir = tempfile.mkdtemp()
+        source_dir = self.extract_tstudio(input_file, temp_dir)
+        manifest = self.buildManifest(source_dir)
+        return yaml.dump(manifest, default_flow_style=False)
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:

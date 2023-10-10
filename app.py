@@ -112,7 +112,7 @@ convert_button.pack(pady=5)
 status_label = tk.Label(root, text="")
 status_label.pack(pady=2)
 
-open_output_button = tk.Button(root, text="Show output", bg="green", fg="white", command=open_directory, padx=10, pady=4)
+open_output_button = tk.Button(root, text="Show output", command=open_directory, padx=10, pady=4)
 open_output_button.pack(pady=2)
 open_output_button.configure(state="disabled")
 open_output_button.pack()

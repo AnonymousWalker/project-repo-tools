@@ -1,6 +1,6 @@
 import sys
 import os
-from usfm.tstudio2rc import convert, convertDir
+from tstudio2rc import convert, convertDir
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:

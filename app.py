@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
-from usfm.tstudio2rc import TstudioToRC
+from tstudio2rc import TstudioToRC
 import subprocess
 import platform
 import yaml

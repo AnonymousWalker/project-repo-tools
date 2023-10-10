@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
-import usfm.tstudio2rc as convert_script
+from usfm.tstudio2rc import TstudioToRC
 import subprocess
 import platform
 
@@ -9,7 +9,7 @@ output_dir = None
 
 def browse_file():
     status_label.config(text="")
-    open_output_button.pack_forget()
+    open_output_button.configure(state="disabled")
     filetypes = (("BTT Writer file", "*.tstudio"), ("All files", "*.*"))
     file_path = filedialog.askopenfilename(filetypes=filetypes)
     if file_path:
@@ -20,7 +20,7 @@ def browse_file():
 
 def browse_directory():
     status_label.config(text="")
-    open_output_button.pack_forget()
+    open_output_button.configure(state="disabled")
     directory_path = filedialog.askdirectory()
     if directory_path:
         global output_dir
@@ -35,8 +35,8 @@ def convert():
         input_file = file_entry.get().replace('\\', '/').replace('\"', '')
         output_dir = directory_entry.get().replace('\\', '/').replace('\"', '')
         try:
-            convert_script.convert(input_file, output_dir)
-            open_output_button.pack(pady=5)
+            TstudioToRC().convert(input_file, output_dir)
+            open_output_button.configure(state="normal")
             status_label.config(text="Conversion completed!")
             print("Done!")
         except:
@@ -93,6 +93,7 @@ status_label.pack(pady=5)
 
 open_output_button = tk.Button(root, text="Show output", bg="green", fg="white", command=open_directory, padx=10, pady=4)
 open_output_button.pack(pady=5)
-open_output_button.pack_forget()
+open_output_button.configure(state="disabled")
+open_output_button.pack()
 
 root.mainloop()

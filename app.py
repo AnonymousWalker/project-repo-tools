@@ -1,11 +1,14 @@
 import tkinter as tk
 from tkinter import filedialog
-from usfm.tstudio2rc import TstudioToRC
+from tstudio2rc import TstudioToRC
 import subprocess
 import platform
+import yaml
 
 input_file = None
 output_dir = None
+manifest_content = None
+converter = TstudioToRC()
 
 def browse_file():
     status_label.config(text="")
@@ -13,10 +16,12 @@ def browse_file():
     filetypes = (("BTT Writer file", "*.tstudio"), ("All files", "*.*"))
     file_path = filedialog.askopenfilename(filetypes=filetypes)
     if file_path:
-        global input_file
+        global input_file, manifest_content
         input_file = file_path
         file_entry.delete(0, tk.END)
         file_entry.insert(tk.END, file_path)
+        manifest_content = converter.previewManifest(input_file)
+        text_area.insert(tk.END, manifest_content)
 
 def browse_directory():
     status_label.config(text="")
@@ -30,12 +35,12 @@ def browse_directory():
 
 def convert():
     if (file_entry.get() != '' and directory_entry.get() != ''):
-        global input_file
-        global output_dir
+        global input_file, output_dir, manifest_content
         input_file = file_entry.get().replace('\\', '/').replace('\"', '')
         output_dir = directory_entry.get().replace('\\', '/').replace('\"', '')
         try:
-            TstudioToRC().convert(input_file, output_dir)
+            manifest = yaml.safe_load(manifest_content)
+            converter.convert(input_file, output_dir, manifest)
             open_output_button.configure(state="normal")
             status_label.config(text="Conversion completed!")
             print("Done!")
@@ -55,8 +60,21 @@ def open_directory():
         elif platform.system() == 'Linux':
             subprocess.Popen(['xdg-open', output_dir])
 
+def toggle_preview_manifest():
+    if preview_var.get():
+        root.geometry("400x700") 
+        text_area.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)    
+    else:
+        root.geometry("400x400") 
+        text_area.pack_forget()
+
+def update_manifest(event):
+    global manifest_content
+    manifest_content = text_area.get(1.0, tk.END)
+
 root = tk.Tk()
-root.geometry("400x370")  # Set initial window size
+root.geometry("400x360")  # Set initial window size
+preview_var = tk.BooleanVar()
 
 region_frame = tk.Frame(root, height=20)
 region_frame.pack()
@@ -82,18 +100,25 @@ directory_entry.pack()
 directory_button = tk.Button(root, text="Choose directory", command=browse_directory, padx=10, pady=5)
 directory_button.pack()
 
-region_frame = tk.Frame(root, height=30)
+region_frame = tk.Frame(root, height=10)
 region_frame.pack()
+
+preview_checkbox = tk.Checkbutton(root, text="Preview output manifest", variable=preview_var, command=toggle_preview_manifest)
+preview_checkbox.pack()
 
 convert_button = tk.Button(root, text="Convert", bg="blue", fg="white", command=convert, padx=10, pady=5)
 convert_button.pack(pady=5)
 
 status_label = tk.Label(root, text="")
-status_label.pack(pady=5)
+status_label.pack(pady=2)
 
-open_output_button = tk.Button(root, text="Show output", bg="green", fg="white", command=open_directory, padx=10, pady=4)
-open_output_button.pack(pady=5)
+open_output_button = tk.Button(root, text="Show output", command=open_directory, padx=10, pady=4)
+open_output_button.pack(pady=2)
 open_output_button.configure(state="disabled")
 open_output_button.pack()
+
+text_area = tk.Text(root, height=10, wrap=tk.WORD, undo=True)
+text_area.bind("<KeyRelease>", update_manifest)
+text_area.pack_forget()
 
 root.mainloop()

@@ -13,3 +13,5 @@ venv/Lib/site-packages/_yaml/__init__.py
 
 venv/
 virtual/**
+dist/
+build/
